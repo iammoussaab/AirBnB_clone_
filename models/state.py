@@ -1,35 +1,38 @@
 #!/usr/bin/python3
-"""Defines the State class."""
-import models
-from os import getenv
-from models.base_model import Base
-from models.base_model import BaseModel
-from models.city import City
-from sqlalchemy import Column
-from sqlalchemy import String
+""" State Module for HBNB project """
+
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from os import getenv
+from models.temp import HBNB_TYPE_STORAGE, DB
 
 
 class State(BaseModel, Base):
-    """Represents a state for a MySQL database.
-
-    Inherits from SQLAlchemy Base and links to the MySQL table states.
-
-    Attributes:
-        __tablename__ (str): The name of the MySQL table to store States.
-        name (sqlalchemy String): The name of the State.
-        cities (sqlalchemy relationship): The State-City relationship.
     """
-    __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = relationship("City",  backref="state", cascade="delete")
+    State class
+    Relationship between Class state to city
+    """
+    __tablename__ = 'states'
 
-    if getenv("HBNB_TYPE_STORAGE") != "db":
+    if (getenv(HBNB_TYPE_STORAGE) == DB):
+        name = Column(String(128), nullable=False)
+        cities = relationship('City', backref='state',
+                              cascade='all, delete, delete-orphan')
+    else:
+        name = ''
+
         @property
         def cities(self):
-            """Get a list of all related City objects."""
-            city_list = []
-            for city in list(models.storage.all(City).values()):
-                if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+            '''Return a list of city instances in filestorage'''
+            from models import storage
+
+            list_cities = []
+            data = storage.all()
+            for city in data:
+                try:
+                    if data[city].state_id == self.id:
+                        list_cities.append(data[city])
+                except Exception:
+                    pass
+            return list_cities

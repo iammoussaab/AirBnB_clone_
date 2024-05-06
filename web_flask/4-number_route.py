@@ -1,41 +1,43 @@
 #!/usr/bin/python3
-"""
-starts a Flask web application
-"""
+"""A script that starts a Flask web application"""
 
 from flask import Flask
+
 app = Flask(__name__)
 
-
-@app.route('/', strict_slashes=False)
-def index():
-    """returns Hello HBNB!"""
-    return 'Hello HBNB!'
+"""Defines the route"""
 
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route("/", strict_slashes=False)
+def hello_world():
+    return "Hello HBNB!"
+
+
+@app.route("/hbnb", strict_slashes=False)
 def hbnb():
-    """returns HBNB"""
-    return 'HBNB'
+    """return HBNB"""
+    return "HBNB"
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def cisfun(text):
-    """display “C ” followed by the value of the text variable"""
+def c_is_fun(text):
+    """Returns C followed by by the value of the text"""
     return 'C ' + text.replace('_', ' ')
 
 
-@app.route('/python', strict_slashes=False)
+@app.route('/python/')
 @app.route('/python/<text>', strict_slashes=False)
-def pythoniscool(text='is cool'):
-    """display “Python ”, followed by the value of the text variable"""
+def python_with_text(text='is cool'):
+    """Returns “Python ”, followed by the value of the text variable"""
     return 'Python ' + text.replace('_', ' ')
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def imanumber(n):
-    """display “n is a number” only if n is an integer"""
-    return "{:d} is a number".format(n)
+def number(n=None):
+    """Returns “n is a number” only if n is an integer"""
+    return str(n) + ' is a number'
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5000')
+    """Starts the flask development server"""
+    app.run(host='0.0.0.0', port=5000)
